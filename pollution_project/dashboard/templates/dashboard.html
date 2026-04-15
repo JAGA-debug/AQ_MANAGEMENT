@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Air Quality Intelligence System</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg,#eef2f7,#e3ebf5);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            width: 240px;
+            position: fixed;
+            background: linear-gradient(180deg,#1e3c72,#2a5298);
+            color: white;
+            padding-top: 30px;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 22px;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.15);
+            border-left: 4px solid #fff;
+            padding-left: 28px;
+        }
+
+        /* Content */
+        .content {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(90deg,#00c6ff,#0072ff);
+            color: white;
+            padding: 60px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .hero h1 {
+            font-weight: 700;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        /* Cards */
+        .card {
+            border-radius: 16px;
+            border: none;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+        }
+
+        /* Titles */
+        .section-title {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Risk indicators */
+        .high-risk { border-left: 6px solid red; }
+        .medium-risk { border-left: 6px solid orange; }
+        .low-risk { border-left: 6px solid green; }
+
+        /* Button */
+        .btn-light {
+            border-radius: 30px;
+            padding: 8px 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h3>🌍 AQ System</h3>
+
+    <a href="#" onclick="showSection('home')">🏠 Awareness</a>
+    <a href="#" onclick="showSection('upload')">📂 Upload</a>
+    <a href="#" onclick="showSection('dashboard')">📊 Dashboard</a>
+    <a href="#" onclick="showSection('suggestions')">💡 Suggestions</a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <!-- AWARENESS -->
+    <div id="home">
+
+        <div class="hero">
+            <h1>Air Pollution is a Silent Killer</h1>
+            <p>Analyze air quality, detect risks, and improve public health with data-driven insights.</p>
+            <button class="btn btn-light mt-3" onclick="showSection('dashboard')">
+                Explore Dashboard →
+            </button>
+        </div>
+
+        <!-- Features -->
+        <div class="row mt-5 text-center">
+
+            <h3 class="mb-4">🚀 What This System Does</h3>
+
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <h5>📊 Correlation Analysis</h5>
+                    <p>Discover relationships between pollution and diseases.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <h5>🚨 Risk Detection</h5>
+                    <p>Identify regions with severe health impact.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <h5>💡 Smart Suggestions</h5>
+                    <p>Get actionable insights to improve air quality.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="upload" style="display:none;">
+        <h2>Upload Dataset</h2>
+        <div class="card p-4">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="file" class="form-control">
+                <br>
+                <button class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" style="display:none;">
+
+        <h2 class="section-title">📊 Correlation Dashboard</h2>
+
+        <div class="row text-center">
+
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h6>Avg PM2.5</h6>
+                    <h4>{{ avg_pm }}</h4>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h6>Asthma</h6>
+                    <h4>{{ total_asthma }}</h4>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h6>Bronchitis</h6>
+                    <h4>{{ total_bronchitis }}</h4>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-4">
+
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h6>Heatmap</h6>
+                    <img src="/static/heatmap.png?{% now 'U' %}" width="100%">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h6>Asthma</h6>
+                    <img src="/static/asthma.png?{% now 'U' %}" width="100%">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h6>Bronchitis</h6>
+                    <img src="/static/bronchitis.png?{% now 'U' %}" width="100%">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SUGGESTIONS -->
+    <div id="suggestions" style="display:none;">
+        <h2 class="section-title">🚨 High Risk Areas & Suggestions</h2>
+
+        {% for r in risk %}
+
+        <div class="card p-4
+            {% if r.pm25 > 150 %} high-risk
+            {% elif r.pm25 > 100 %} medium-risk
+            {% else %} low-risk
+            {% endif %}
+        ">
+
+            <h5>📍 {{ r.city }}</h5>
+
+            <p>
+                PM2.5: {{ r.pm25 }} |
+                Asthma: {{ r.asthma }} |
+                Bronchitis: {{ r.bronchitis }}
+            </p>
+
+            <ul>
+
+                {% if r.pm25 > 100 %}
+                <li>Reduce vehicle emissions and promote public transport</li>
+                <li>Control industrial pollution</li>
+                {% endif %}
+
+                {% if r.asthma > 300 %}
+                <li>Increase respiratory health camps</li>
+                <li>Encourage mask usage</li>
+                {% endif %}
+
+                {% if r.bronchitis > 200 %}
+                <li>Improve indoor air quality</li>
+                {% endif %}
+
+                <li>Increase green cover (tree plantation)</li>
+
+            </ul>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+function showSection(section) {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("upload").style.display = "none";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("suggestions").style.display = "none";
+
+    document.getElementById(section).style.display = "block";
+}
+</script>
+
+</body>
+</html>
